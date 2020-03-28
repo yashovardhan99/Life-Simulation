@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6551250662414759742}
   - component: {fileID: 6551250662414759736}
   m_Layer: 0
-  m_Name: Character
+  m_Name: Faster Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: abd6aaebd3aed1e478361b3db428e53b, type: 2}
+  - {fileID: 2100000, guid: e0f9db5ed1481b24cb3c62958e902548, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e508b27aed49b4482bd678ccc732f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 40
   getDirTime: 2
   rigidBody: {fileID: 0}
   timeManager: {fileID: 0}
@@ -152,13 +152,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   maxEnergy: 200
-  energyPerUpdate: 0.1
+  energyPerUpdate: 0.2
   energyPerFood: 100
   currentEnergy: 100
-  mutations:
-  - {fileID: 6551250662414759717, guid: adcf76cb1cd13a641a016a00b8c4d9f0, type: 3}
-  - {fileID: 6551250662414759717, guid: fd97c06bb64f2534c875e11fd0ab550a, type: 3}
-  mutationChance:
-  - 0.1
-  - 0.1
   visibleTargets: []

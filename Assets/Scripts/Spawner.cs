@@ -12,10 +12,11 @@ public class Spawner : MonoBehaviour
     public List<GameObject> foods;
     public GameObject plane;
     float maxX, maxZ;
-    private int currentCharacterCount = 0;
+    public int currentCharacterCount {get; private set;}
     // Start is called before the first frame update
     void Start()
     {
+        currentCharacterCount = 0;
         Bounds bounds = plane.GetComponent<MeshRenderer>().bounds;
         maxX = bounds.extents.x;
         maxZ = bounds.extents.z;
@@ -25,7 +26,7 @@ public class Spawner : MonoBehaviour
         timeManager.onDayEnd += destroyUnusedFood;
 
         for(int i=0; i<charactersCount; i++) {
-            spawnCharacter();
+            spawnCharacter(characterPrefab);
         }
     }
     void startspawn() {
@@ -68,11 +69,11 @@ public class Spawner : MonoBehaviour
     }
     // Update is called once per frame
     public void notifyDeath() {
-        print(currentCharacterCount);
+        // print(currentCharacterCount);
         currentCharacterCount--;
     }
-    public void spawnCharacter() {
-        GameObject character = Instantiate(characterPrefab, getRandomPosition(false), getRandomRotation());
+    public void spawnCharacter(GameObject type) {
+        GameObject character = Instantiate(type, getRandomPosition(false), getRandomRotation());
         character.GetComponent<RandomMovement>().timeManager = timeManager;
         character.GetComponent<FieldOfView>().spawner = this;
         currentCharacterCount++;

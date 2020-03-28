@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
 {
-    
     public TimeManager timeManager;
     public Spawner spawner;
     public event System.Action resumeLooking;
@@ -17,9 +16,17 @@ public class FieldOfView : MonoBehaviour
     public float meshResolution;
     RandomMovement movement;
     public LayerMask targetMask;
-    private int foodsCollectedToday;
+    public int foodsCollectedToday {get; private set;}
+    public float maxEnergy = 200;
+    public float energyPerUpdate = 0.1f;
+    public float energyPerFood = 100;
+    [SerializeField]
+    private float currentEnergy = 100;
+    public GameObject[] mutations;
+    public float[] mutationChance;    
     [HideInInspector]
     public List<Transform> visibleTargets = new List<Transform>();
+    bool dayOnGoing;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,17 +41,19 @@ public class FieldOfView : MonoBehaviour
 
     void resumeSearching() {
         searching = true;
+        dayOnGoing = true;
         StartCoroutine(findTargetsWithDelay());
     }
 
     void endOfDay() {
+        dayOnGoing = false;
         // print(transform.name+" collected "+foodsCollectedToday+" food today");
-        if(foodsCollectedToday == 0) {
-            spawner.notifyDeath();
-            Destroy(gameObject);
-        }
+        // if(foodsCollectedToday == 0) {
+            // spawner.notifyDeath();
+            // Destroy(gameObject);
+        // }
         if(foodsCollectedToday >=2) {
-            spawner.spawnCharacter(); // replicate
+            replicate();
         }
         foodsCollectedToday = 0;
         StopAllCoroutines();
@@ -97,6 +106,10 @@ public class FieldOfView : MonoBehaviour
         if(Physics.Raycast(ray, out hitInfo, 2, targetMask)) {
             // print("Object is here!");
             foodsCollectedToday++;
+            currentEnergy += energyPerFood;
+            if(currentEnergy > maxEnergy) {
+                currentEnergy = maxEnergy;
+            }
             Destroy(hitInfo.transform.gameObject);
         }
         else {
@@ -130,5 +143,28 @@ public class FieldOfView : MonoBehaviour
     void OnDestroy() {
         timeManager.onDayStart -= resumeSearching;
         timeManager.onDayEnd -= endOfDay;
+    }
+    void FixedUpdate() {
+        if(dayOnGoing) {
+            currentEnergy -= energyPerUpdate;
+        }
+        if(currentEnergy <= 0) {
+            spawner.notifyDeath();
+            Destroy(gameObject);
+        }
+    }
+    void replicate() {
+        GameObject toReplicate = gameObject;
+        if(mutations.Length > 0) {
+            float chance = Random.value;            
+            for(int i=0; i<mutations.Length; i++) {
+                if(chance < mutationChance[i]) {
+                    toReplicate = mutations[i];
+                    break;
+                }
+                chance-=mutationChance[i];
+            }
+        }
+        spawner.spawnCharacter(toReplicate);
     }
 }
